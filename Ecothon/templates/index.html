@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Smart Plant Doctor · neo botanic intelligence</title>
+  <!-- Google Fonts & Font Awesome 6 (free) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #d4ecd4;
+      color: #142014;
+      line-height: 1.5;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ===== HYPER-DETAILED NATURE BACKGROUND ===== */
+    .botanic-ambient {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: -3;
+      background: radial-gradient(ellipse at 30% 40%, #c3e3c3 0%, #a3cb9e 70%, #6e9669 100%);
+    }
+
+    /* animated light leaks */
+    .ambient-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: repeating-linear-gradient(45deg, rgba(255,255,240,0.03) 0px, rgba(180,220,160,0.06) 300px, transparent 600px);
+      animation: drift 32s linear infinite;
+      z-index: -2;
+      pointer-events: none;
+    }
+    @keyframes drift { 0% { transform: translateX(0) translateY(0); } 100% { transform: translateX(15%) translateY(10%); } }
+
+    /* floating 3D leaves with animations */
+    .floating-leaf {
+      position: absolute;
+      color: rgba(50, 100, 30, 0.12);
+      font-size: 12rem;
+      z-index: -1;
+      animation: levitate 27s infinite alternate ease-in-out;
+    }
+    .leaf1 { top: 3%; left: -2%; transform: rotate(-20deg); animation-duration: 24s; }
+    .leaf2 { bottom: -2%; right: 0%; transform: rotate(35deg) scaleX(-1); font-size: 18rem; animation-duration: 31s; }
+    .leaf3 { top: 30%; right: 12%; font-size: 10rem; color: rgba(70, 120, 40, 0.1); animation: spinSlow 48s infinite linear; }
+    @keyframes levitate {
+      0% { transform: translateY(0px) rotate(-20deg); }
+      100% { transform: translateY(-40px) rotate(-10deg); }
+    }
+    @keyframes spinSlow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* ===== MAIN CONTAINER ===== */
+    .master-container {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 30px 40px 50px;
+      position: relative;
+      backdrop-filter: blur(3px);
+    }
+
+    /* ===== HEADER WITH MICRO-INTERACTIONS ===== */
+    .hero-panel {
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(18px);
+      border-radius: 70px;
+      padding: 22px 42px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 45px;
+      border: 1px solid rgba(200, 235, 180, 0.9);
+      box-shadow: 0 30px 50px -30px #1d4a1d, 0 0 0 1px rgba(255, 255, 200, 0.5);
+      transition: box-shadow 0.3s, transform 0.3s;
+    }
+    .hero-panel:hover {
+      box-shadow: 0 40px 60px -28px #0f3f0f, 0 0 0 2px #c0f0c0;
+      transform: scale(1.01);
+    }
+
+    .title-glow h1 {
+      font-size: 3.8rem;
+      font-weight: 800;
+      background: linear-gradient(145deg, #1c4f1c, #3a943a, #176017);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      animation: textPulse 4s infinite;
+    }
+    @keyframes textPulse { 0% { text-shadow: 0 0 0 #c0ffc0; } 50% { text-shadow: 0 0 10px #b7f7b7; } 100% { text-shadow: 0 0 0 #c0ffc0; } }
+
+    .chip-group {
+      display: flex;
+      gap: 14px;
+    }
+    .chip {
+      background: #1f5a1f;
+      color: white;
+      padding: 12px 28px;
+      border-radius: 60px;
+      font-weight: 600;
+      box-shadow: 0 12px 18px -12px #144014;
+      border: 1px solid #a0dd9f;
+      transition: 0.2s;
+      cursor: default;
+    }
+    .chip:hover {
+      background: #114511;
+      transform: translateY(-3px);
+    }
+
+    /* ===== STATS COUNTERS (animated) ===== */
+    .stat-grid {
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+      margin: 25px 0 55px;
+      justify-content: center;
+    }
+    .stat-tile {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(12px);
+      border-radius: 110px;
+      padding: 20px 48px 20px 36px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      border: 1px solid rgba(120, 190, 110, 0.8);
+      transition: 0.3s;
+      animation: floatTile 5s infinite alternate;
+    }
+    .stat-tile:nth-child(2) { animation-delay: 0.7s; }
+    .stat-tile:nth-child(3) { animation-delay: 1.3s; }
+    @keyframes floatTile {
+      0% { transform: translateY(0); box-shadow: 0 15px 25px -16px #1b461b; }
+      100% { transform: translateY(-8px); box-shadow: 0 28px 38px -20px #0f3f0f; }
+    }
+    .stat-icon {
+      background: #226622;
+      color: white;
+      border-radius: 50%;
+      width: 68px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      box-shadow: inset 0 -3px 0 #a5e0a5;
+    }
+    .stat-num {
+      font-size: 2.7rem;
+      font-weight: 700;
+      color: #1c511c;
+      line-height: 1;
+    }
+
+    /* ===== TWO MAIN PILLARS (DETAILED) ===== */
+    .bi-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin: 60px 0 60px;
+    }
+
+    /* shared card style — super detailed */
+    .premium-card {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(20px);
+      border-radius: 64px;
+      padding: 42px 38px;
+      border: 1px solid rgba(180, 230, 160, 0.9);
+      box-shadow: 0 35px 60px -30px #154015, inset 0 1px 4px #ffffffee;
+      transition: all 0.35s cubic-bezier(0.15, 0.9, 0.25, 1);
+    }
+    .premium-card:hover {
+      transform: translateY(-12px) scale(1.01);
+      box-shadow: 0 55px 75px -30px #0e3f0e;
+      border-color: #b2f0b2;
+    }
+
+    .card-badge {
+      display: inline-block;
+      background: #174017;
+      color: #daf5da;
+      padding: 10px 28px;
+      border-radius: 50px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 24px;
+      border: 1px solid #7ec97e;
+    }
+
+    .card-title {
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: #0a3b0a;
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    /* uploader kinetic */
+    .kinetic-upload {
+      background: linear-gradient(145deg, #daf5da, #c0e7c0);
+      border-radius: 54px;
+      padding: 36px 30px;
+      text-align: center;
+      border: 2px dashed #58a558;
+      cursor: pointer;
+      transition: 0.3s;
+      margin: 25px 0 30px;
+    }
+    .kinetic-upload:hover {
+      background: #c0f0c0;
+      border-color: #1d721d;
+      transform: scale(1.02);
+      box-shadow: 0 20px 30px -16px #1d5e1d;
+    }
+    .kinetic-upload i {
+      font-size: 5rem;
+      color: #1f661f;
+      filter: drop-shadow(0 10px 8px #abd6ab);
+      animation: wobble 3s infinite;
+    }
+    @keyframes wobble { 0% { transform: rotate(0deg); } 25% { transform: rotate(4deg); } 75% { transform: rotate(-4deg); } 100% { transform: rotate(0deg); } }
+
+    .file-chip {
+      background: white;
+      padding: 12px 28px;
+      border-radius: 40px;
+      display: inline-block;
+      margin: 20px 0 8px;
+      box-shadow: 0 5px 10px rgba(0,30,0,0.1);
+    }
+
+    /* luxury input group */
+    .input-luxury {
+      display: flex;
+      background: white;
+      border-radius: 120px;
+      border: 2px solid #b1dfb1;
+      transition: 0.2s;
+      margin: 35px 0 25px;
+      align-items: center;
+      padding-left: 28px;
+    }
+    .input-luxury:focus-within {
+      border-color: #146414;
+      box-shadow: 0 0 0 8px rgba(60, 160, 60, 0.2);
+    }
+    .input-luxury i {
+      color: #1b681b;
+      font-size: 1.8rem;
+    }
+    .input-luxury input {
+      border: none;
+      padding: 20px 16px;
+      font-size: 1.2rem;
+      width: 100%;
+      background: transparent;
+      outline: none;
+      font-weight: 500;
+    }
+    .input-luxury button {
+      background: #1f661f;
+      border: none;
+      color: white;
+      font-weight: 700;
+      padding: 18px 38px;
+      border-radius: 120px;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+    .input-luxury button:hover {
+      background: #0c4a0c;
+      transform: scale(1.03);
+      box-shadow: 0 15px 20px -12px #0b420b;
+    }
+
+    /* ===== RESULT CONTAINERS — MASTER DETAIL ===== */
+    .result-crystal {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(28px);
+      border-radius: 58px;
+      padding: 32px;
+      margin-top: 32px;
+      border: 1px solid #d5f3d5;
+      box-shadow: 0 20px 35px -20px #1c4f1c, inset 0 0 0 2px rgba(255, 255, 240, 0.7);
+    }
+
+    .disease-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+    .disease-item {
+      background: white;
+      border-radius: 32px;
+      padding: 22px;
+      border: 1px solid #bbebbb;
+      transition: 0.2s;
+    }
+    .disease-item:hover {
+      background: #e6ffe6;
+      transform: scale(1.02);
+    }
+
+    .progress-liquid {
+      background: #cef0ce;
+      border-radius: 50px;
+      height: 16px;
+      margin: 16px 0 8px;
+      overflow: hidden;
+    }
+    .liquid-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #2e7d32, #6cc96c);
+      border-radius: 50px;
+      animation: fillWave 2s infinite alternate;
+    }
+    @keyframes fillWave { 0% { opacity: 0.9; } 100% { opacity: 1; background: #44b344; } }
+
+    /* plant library structured result — expanded */
+    .phyto-card {
+      background: #ebfdeb;
+      border-radius: 48px;
+      padding: 34px;
+      border: 1px solid #c2f0c2;
+    }
+    .plant-hero {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      border-bottom: 3px dashed #8ac48a;
+      padding-bottom: 25px;
+      margin-bottom: 30px;
+    }
+    .plant-hero i { font-size: 4rem; background: #d0f0d0; padding: 18px; border-radius: 50%; color: #1e631e; }
+    .sci-name { font-style: italic; color: #0f4d0f; font-weight: 500; }
+
+    .attr-matrix {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+    .attr-cell {
+      background: white;
+      border-radius: 34px;
+      padding: 22px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: 0 5px 12px rgba(0,30,0,0.05);
+      transition: 0.2s;
+    }
+    .attr-cell:hover {
+      background: #e5ffe5;
+      box-shadow: 0 8px 20px -12px #1c6b1c;
+    }
+    .attr-cell i { font-size: 2.4rem; background: #d4f2d4; padding: 14px; border-radius: 50%; }
+
+    /* ===== ANIMATED FOOTER ===== */
+    .bio-footer {
+      background: #143014;
+      border-radius: 70px 70px 30px 30px;
+      padding: 55px 55px 45px;
+      margin-top: 100px;
+      color: #deface;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #73b573;
+      box-shadow: 0 -15px 35px -20px #0f2b0f;
+      transition: 0.3s;
+    }
+    .bio-footer:hover { background: #124012; }
+    .footer-quote {
+      font-size: 2.1rem;
+      border-left: 6px solid #9ad09a;
+      padding-left: 32px;
+      font-weight: 300;
+    }
+
+    /* loader animation */
+    .pulse-ring {
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .ring {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #1e7a1e;
+      animation: pulseRing 1.4s infinite;
+    }
+    @keyframes pulseRing { 0% { box-shadow: 0 0 0 0 #7fda7f; } 70% { box-shadow: 0 0 0 14px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+
+    /* responsive */
+    @media (max-width: 1000px) {
+      .bi-column { grid-template-columns: 1fr; }
+      .hero-panel { flex-direction: column; align-items: start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="botanic-ambient"></div>
+  <div class="ambient-overlay"></div>
+  <i class="fas fa-leaf floating-leaf leaf1"></i>
+  <i class="fas fa-seedling floating-leaf leaf2"></i>
+  <i class="fas fa-tree floating-leaf leaf3"></i>
+
+  <div class="master-container">
+    <!-- Hero -->
+    <div class="hero-panel">
+      <div class="title-glow"><h1>🌿 AI Smart Plant Doctor</h1></div>
+      <div class="chip-group">
+        <span class="chip"><i class="fas fa-atom"></i> science project 2025</span>
+        <span class="chip"><i class="fas fa-microchip"></i> neural leaf AI</span>
+      </div>
+    </div>
+
+    <!-- Floating stats with animation -->
+    <div class="stat-grid">
+      <div class="stat-tile"><span class="stat-icon"><i class="fas fa-leaf"></i></span> <span class="stat-num">15k+</span> <span>diagnoses</span></div>
+      <div class="stat-tile"><span class="stat-icon"><i class="fas fa-chart-line"></i></span> <span class="stat-num">98.6%</span> <span>accuracy</span></div>
+      <div class="stat-tile"><span class="stat-icon"><i class="fas fa-seedling"></i></span> <span class="stat-num">64</span> <span>crops</span></div>
+    </div>
+
+    <!-- Two core feature columns (ultra detailed) -->
+    <div class="bi-column">
+      <!-- LEFT: disease detection -->
+      <div class="premium-card">
+        <span class="card-badge"><i class="fas fa-microscope"></i> real‑time analysis</span>
+        <div class="card-title"><i class="fas fa-bug"></i> Leaf disease lab</div>
+        <!-- kinetic upload -->
+        <div class="kinetic-upload" id="kineticDrop" onclick="document.getElementById('leafInput').click()">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <p style="font-weight:600; font-size:1.3rem;">drag / tap to select leaf</p>
+          <span id="leafFilename" class="file-chip"><i class="far fa-image"></i> no file</span>
+        </div>
+        <input type="file" id="leafInput" accept="image/*" style="display:none;">
+
+        <button id="analyzeLeafBtn" style="width:100%; background:#1f661f; border:none; color:white; padding:20px; border-radius:80px; font-size:1.4rem; font-weight:600; margin:20px 0 0; display:flex; align-items:center; justify-content:center; gap:15px; cursor:pointer;"><i class="fas fa-flask"></i> check </button>
+
+        <!-- detailed result panel -->
+        <div id="leafResultCrystal" class="result-crystal">
+          <div style="display:flex; gap:20px; align-items:center;"><i class="fas fa-spa" style="font-size:3rem;"></i> <span style="font-size:1.5rem;">ready for leaf scan</span></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: plant library AI -->
+      <div class="premium-card">
+        <span class="card-badge"><i class="fas fa-robot"></i> chatGPT‑style knowledge</span>
+        <div class="card-title"><i class="fas fa-book-open"></i> Plant Informationˀ</div>
+
+        <div class="input-luxury">
+          <i class="fas fa-seedling"></i>
+          <input type="text" id="plantQuery" placeholder="e.g., Rose, Mango, Tulsi ..." value="Tulsi">
+          <button id="plantInfoBtn"><i class="fas fa-paper-plane"></i> discover</button>
+        </div>
+
+        <!-- rich plant info container -->
+        <div id="plantInfoCrystal" class="phyto-card">
+          <div class="plant-hero">
+            <i class="fas fa-spa"></i>
+            <div><span style="font-size:2.4rem; font-weight:800; color:#154015;">Tulsi</span> <span class="sci-name">(Ocimum tenuiflorum)</span></div>
+          </div>
+          <div class="attr-matrix">
+            <div class="attr-cell"><i class="fas fa-tint"></i> <div><strong>Water</strong><br> moderate, well-drained</div></div>
+            <div class="attr-cell"><i class="fas fa-sun"></i> <div><strong>Sun</strong><br> 5+ hrs direct</div></div>
+            <div class="attr-cell"><i class="fas fa-heart"></i> <div><strong>Benefits</strong><br> adaptogen, purifier</div></div>
+            <div class="attr-cell"><i class="fas fa-exclamation-triangle"></i> <div><strong>Diseases</strong><br> leaf spot, aphids</div></div>
+            <div class="attr-cell" style="grid-column:span 2;"><i class="fas fa-clipboard-list"></i> <div><strong>Care</strong><br> prune often, neem oil, avoid overwater</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER with animation -->
+    <div class="bio-footer">
+      <div>
+        <h2 style="color:#bbe7bb;"><i class="fas fa-leaf"></i> AI Smart Plant Doctor</h2>
+        <p style="margin:15px 0 0;"><i class="fas fa-user-graduate"></i> Ada · Jonas · Mira · Leo</p>
+        <p>school science project — green intelligence</p>
+      </div>
+      <div class="footer-quote">“Protect plants, protect life.”</div>
+    </div>
+  </div>
+
+  <script>
+(function(){
+
+const leafFile = document.getElementById("leafInput");
+const analyzeBtn = document.getElementById("analyzeLeafBtn");
+const leafResult = document.getElementById("leafResultCrystal");
+
+const plantInput = document.getElementById("plantQuery");
+const plantBtn = document.getElementById("plantInfoBtn");
+const plantInfoDiv = document.getElementById("plantInfoCrystal");
+
+
+/* ------------------------------
+FILE SELECT
+------------------------------ */
+
+leafFile.addEventListener("change", function(){
+  const label = document.getElementById("leafFilename");
+  if(leafFile.files.length){
+    label.innerHTML = "✔ " + leafFile.files[0].name;
+  }
+});
+
+
+/* ------------------------------
+PARSE AI RESPONSE
+------------------------------ */
+
+function parseAI(text){
+
+  const fields = {
+    "Plant Name":"",
+    "Scientific Name":"",
+    "Plant Description":"",
+    "Importance of the Plant":"",
+    "Water Requirement":"",
+    "Sunlight Requirement":"",
+    "Plant Health Status":"",
+    "Possible Disease Detected":"",
+    "Risk Percentage":"",
+    "Symptoms Observed":"",
+    "Suggested Treatment":"",
+    "Prevention Tips":""
+  }
+
+  const lines = text.split("\n")
+
+  lines.forEach(line=>{
+      for(let key in fields){
+          if(line.toLowerCase().startsWith(key.toLowerCase())){
+              fields[key] = line.split(":")[1]?.trim() || ""
+          }
+      }
+  })
+
+  return fields
+}
+
+
+/* ------------------------------
+ANALYZE LEAF
+------------------------------ */
+
+async function analyzeLeaf(){
+
+  if(!leafFile.files.length){
+    alert("Upload a plant image first")
+    return
+  }
+
+  leafResult.innerHTML = `
+  <div style="display:flex;align-items:center;gap:15px">
+  <div class="ring"></div>
+  <h3>🌿 AI is analyzing plant health...</h3>
+  </div>
+  `
+
+  const formData = new FormData()
+  formData.append("image", leafFile.files[0])
+
+  try{
+
+    const res = await fetch("/analyze-leaf",{
+      method:"POST",
+      body:formData
+    })
+
+    const data = await res.json()
+
+    const result = data.result
+
+    if(result.includes("Invalid image")){
+        leafResult.innerHTML = `<h3 style="color:red">${result}</h3>`
+        return
+    }
+
+    const plant = parseAI(result)
+
+    /* Risk percentage extraction */
+    let risk = parseInt(plant["Risk Percentage"]) || 0
+
+    let color = "#2ecc71"
+    if(risk > 60) color = "#e74c3c"
+    else if(risk > 30) color = "#f1c40f"
+
+    leafResult.innerHTML = `
+
+    <div class="phyto-card">
+
+      <div class="plant-hero">
+        <i class="fas fa-leaf"></i>
+        <div>
+          <h2>${plant["Plant Name"]}</h2>
+          <div class="sci-name">${plant["Scientific Name"]}</div>
+        </div>
+      </div>
+
+      <div class="attr-matrix">
+
+        <div class="attr-cell">
+          <i class="fas fa-info-circle"></i>
+          <div>
+            <strong>Description</strong><br>
+            ${plant["Plant Description"]}
+          </div>
+        </div>
+
+        <div class="attr-cell">
+          <i class="fas fa-seedling"></i>
+          <div>
+            <strong>Importance</strong><br>
+            ${plant["Importance of the Plant"]}
+          </div>
+        </div>
+
+        <div class="attr-cell">
+          <i class="fas fa-tint"></i>
+          <div>
+            <strong>Water</strong><br>
+            ${plant["Water Requirement"]}
+          </div>
+        </div>
+
+        <div class="attr-cell">
+          <i class="fas fa-sun"></i>
+          <div>
+            <strong>Sunlight</strong><br>
+            ${plant["Sunlight Requirement"]}
+          </div>
+        </div>
+
+      </div>
+
+      <hr style="margin:30px 0">
+
+      <h3>🦠 Disease Detection</h3>
+
+      <p><strong>Status:</strong> ${plant["Plant Health Status"]}</p>
+      <p><strong>Disease:</strong> ${plant["Possible Disease Detected"]}</p>
+      <p><strong>Symptoms:</strong> ${plant["Symptoms Observed"]}</p>
+
+      <br>
+
+      <h3>⚠ Risk Level: ${risk}%</h3>
+
+      <div style="background:#eee;border-radius:50px;height:18px;">
+        <div style="width:${risk}%;background:${color};height:100%;border-radius:50px;"></div>
+      </div>
+
+      <br>
+
+      <h3>💊 Treatment</h3>
+      <p>${plant["Suggested Treatment"]}</p>
+
+      <h3>🌱 Prevention</h3>
+      <p>${plant["Prevention Tips"]}</p>
+
+    </div>
+    `
+
+  }catch(err){
+    leafResult.innerHTML = `<p style="color:red">Error analyzing plant</p>`
+  }
+
+}
+
+
+/* ------------------------------
+PLANT INFO SEARCH
+------------------------------ */
+
+async function fetchPlantInfo(){
+
+  const plant = plantInput.value
+
+  plantInfoDiv.innerHTML = `<h3>🌱 AI is fetching plant information...</h3>`
+
+  const res = await fetch("/plant-info",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({plantName:plant})
+  })
+
+  const data = await res.json()
+
+  plantInfoDiv.innerHTML = `<pre>${data.result}</pre>`
+}
+
+
+/* ------------------------------
+EVENTS
+------------------------------ */
+
+analyzeBtn.addEventListener("click", analyzeLeaf)
+
+plantBtn.addEventListener("click", fetchPlantInfo)
+
+plantInput.addEventListener("keypress", function(e){
+  if(e.key==="Enter") fetchPlantInfo()
+})
+
+})()
+</script>
+</body>
+</html>
